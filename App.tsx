@@ -5,8 +5,9 @@ import Main from './src/main';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {StatusBar, StyleSheet} from 'react-native';
 import {colors} from './src/constants/colors';
-import RippleEffect from './src/interactions/RippleEffect';
+
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import RippleEffect from './src/interactions/RippleEffect/RippleEffect';
 
 export type RootStackParamList = {
   Main: undefined;
