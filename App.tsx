@@ -6,8 +6,8 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {StatusBar, StyleSheet} from 'react-native';
 import {colors} from './src/constants/colors';
 
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
-import RippleEffect from './src/interactions/RippleEffect/RippleEffect';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import RippleEffect from './src/interactions/ripple-effect/RippleEffect';
 
 export type RootStackParamList = {
   Main: undefined;
@@ -24,26 +24,24 @@ function App(): React.JSX.Element {
           barStyle="dark-content"
           backgroundColor={colors.background}
         />
-        <SafeAreaView style={styles.container}>
-          <NavigationContainer>
-            <Stack.Navigator
-              initialRouteName="Main"
-              screenOptions={{
-                headerShown: false,
-              }}>
-              <Stack.Screen
-                name="Main"
-                component={Main}
-                options={{title: 'Interaction Lab'}}
-              />
-              <Stack.Screen
-                name="RippleEffect"
-                component={RippleEffect}
-                options={{title: 'Ripple Effect'}}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </SafeAreaView>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="Main"
+            screenOptions={{
+              headerShown: false,
+            }}>
+            <Stack.Screen
+              name="Main"
+              component={Main}
+              options={{title: 'Interaction Lab'}}
+            />
+            <Stack.Screen
+              name="RippleEffect"
+              component={RippleEffect}
+              options={{title: 'Ripple Effect'}}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

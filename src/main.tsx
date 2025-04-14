@@ -4,6 +4,7 @@ import {theme} from './constants/theme';
 import {useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 type MainNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -43,9 +44,14 @@ const ListItem = ({
 
 const Main = () => {
   const navigation = useNavigation<MainNavigationProp>();
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={styles.screen}>
+    <View
+      style={[
+        styles.screen,
+        {paddingTop: insets.top, paddingBottom: insets.bottom},
+      ]}>
       <Text style={styles.title}>Interaction Lab</Text>
 
       <View style={styles.listContainer}>

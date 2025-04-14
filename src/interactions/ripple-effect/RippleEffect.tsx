@@ -10,7 +10,7 @@ import {Canvas, Circle} from '@shopify/react-native-skia';
 import {colors} from '../../constants/colors';
 
 const DIAMETER = 100;
-const EXPANSION_DURATION = 1000;
+const EXPANSION_DURATION = 400;
 
 const RippleEffect = () => {
   const x = useSharedValue(0);
@@ -31,7 +31,7 @@ const RippleEffect = () => {
     y.value = e.y;
 
     r.value = withSequence(
-      withTiming(DIAMETER * 10, {duration: EXPANSION_DURATION}),
+      withTiming(DIAMETER * 4, {duration: EXPANSION_DURATION}),
       withTiming(0, {duration: 0}),
     );
     opacity.value = withSequence(
