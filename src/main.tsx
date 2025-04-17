@@ -15,8 +15,13 @@ const listData: Array<{
 }> = [
   {
     title: 'Ripple Effect',
-    description: 'A simple ripple animation effect',
+    description: 'Circular ripple animation triggered by background touch',
     route: 'RippleEffect',
+  },
+  {
+    title: 'InlineTextSwap',
+    description: 'Swaps inline text with animation on touch or click',
+    route: 'InlineTextSwap',
   },
 ];
 

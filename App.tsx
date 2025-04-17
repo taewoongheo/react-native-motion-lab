@@ -8,10 +8,12 @@ import {colors} from './src/constants/colors';
 
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import RippleEffect from './src/interactions/ripple-effect/RippleEffect';
+import InlineTextSwap from './src/interactions/inline-text-swap/InlineTextSwap';
 
 export type RootStackParamList = {
   Main: undefined;
   RippleEffect: undefined;
+  InlineTextSwap: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -39,6 +41,11 @@ function App(): React.JSX.Element {
               name="RippleEffect"
               component={RippleEffect}
               options={{title: 'Ripple Effect'}}
+            />
+            <Stack.Screen
+              name="InlineTextSwap"
+              component={InlineTextSwap}
+              options={{title: 'Inline Text Swap'}}
             />
           </Stack.Navigator>
         </NavigationContainer>
