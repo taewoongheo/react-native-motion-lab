@@ -4,10 +4,12 @@ import Animated, {
   Easing,
   FadeInDown,
   LinearTransition,
-  FadeIn,
   FadeOut,
   FadeInUp,
 } from 'react-native-reanimated';
+
+const LAYOUT_DURATION = 300;
+const EXIT_DURATION = 1;
 
 function InlineTextSwap(): React.ReactElement {
   const [variants, setVariants] = useState<string[]>([
@@ -16,27 +18,36 @@ function InlineTextSwap(): React.ReactElement {
     'Fullstack',
     'Devops',
     'Coffee-fueled',
-    'Frontend And Backend',
   ]);
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isAnimatingOut, setIsAnimatingOut] = useState<boolean>(false);
+
+  // 드롭다운 토글 핸들러 수정
+  const dropDown = (): void => {
+    if (isExpanded) {
+      setIsAnimatingOut(true);
+
+      setTimeout(() => {
+        setIsExpanded(false);
+        setIsAnimatingOut(false);
+      }, EXIT_DURATION);
+    } else {
+      setIsExpanded(true);
+    }
+  };
 
   const changeWord = (): void => {
     const copy = [...variants];
     const head = copy.shift();
     setVariants([...copy, head || 'not']);
-    setIsExpanded(false);
-  };
-
-  const dropDown = (): void => {
-    setIsExpanded(prevState => !prevState);
   };
 
   return (
     <View style={styles.mainContainer}>
       <Animated.View
         style={styles.mainAnimatedContainer}
-        layout={LinearTransition.duration(200)}>
+        layout={LinearTransition.duration(LAYOUT_DURATION)}>
         <Text style={styles.staticText}>Hi👋, I'm</Text>
 
         <View style={styles.textContainer}>
@@ -45,7 +56,7 @@ function InlineTextSwap(): React.ReactElement {
               <Animated.Text
                 style={styles.variantsText}
                 key={variants[0]}
-                entering={FadeInDown.duration(400).easing(
+                entering={FadeInDown.duration(500).easing(
                   Easing.out(Easing.exp),
                 )}>
                 {variants[0]}
@@ -53,33 +64,40 @@ function InlineTextSwap(): React.ReactElement {
             </View>
           </TouchableOpacity>
 
-          {!isExpanded && (
+          {!isExpanded && !isAnimatingOut && (
             <Animated.Text
               style={[styles.staticText, styles.inlineDeveloper]}
-              entering={FadeIn.duration(300).easing(Easing.out(Easing.quad))}
-              exiting={FadeOut.duration(250).easing(Easing.in(Easing.quad))}
-              layout={LinearTransition.duration(300).easing(
+              entering={FadeInDown.duration(LAYOUT_DURATION / 2).easing(
+                Easing.out(Easing.exp),
+              )}
+              layout={LinearTransition.duration(LAYOUT_DURATION).easing(
                 Easing.inOut(Easing.ease),
               )}>
               Developer
             </Animated.Text>
           )}
 
-          {isExpanded && (
+          {(isExpanded || isAnimatingOut) && (
             <>
               <Animated.View
                 style={styles.dropdownContainer}
-                layout={LinearTransition.duration(300)}>
+                entering={FadeInDown.duration(LAYOUT_DURATION).easing(
+                  Easing.out(Easing.exp),
+                )}
+                exiting={FadeOut.duration(EXIT_DURATION).easing(
+                  Easing.in(Easing.quad),
+                )}
+                layout={LinearTransition.duration(EXIT_DURATION)}>
                 {variants.slice(1).map((variant, index) => (
                   <Animated.View
                     key={index}
-                    entering={FadeInUp.duration(1000)
+                    entering={FadeInUp.duration(800)
                       .delay(index * 10)
                       .easing(Easing.out(Easing.exp))}
-                    exiting={FadeOut.duration(200).easing(
+                    exiting={FadeOut.duration(EXIT_DURATION).easing(
                       Easing.in(Easing.quad),
                     )}
-                    layout={LinearTransition.duration(300)}>
+                    layout={LinearTransition.duration(EXIT_DURATION)}>
                     <TouchableOpacity
                       style={styles.dropdownItem}
                       onPress={() => {
@@ -88,7 +106,12 @@ function InlineTextSwap(): React.ReactElement {
                           ...variants.filter(v => v !== variant),
                         ];
                         setVariants(newVariants);
-                        setIsExpanded(false);
+
+                        setIsAnimatingOut(true);
+                        setTimeout(() => {
+                          setIsExpanded(false);
+                          setIsAnimatingOut(false);
+                        }, EXIT_DURATION);
                       }}>
                       <Text style={styles.dropdownText}>{variant}</Text>
                     </TouchableOpacity>
@@ -98,11 +121,13 @@ function InlineTextSwap(): React.ReactElement {
 
               <Animated.Text
                 style={[styles.staticText, styles.developerTextExpanded]}
-                entering={FadeInUp.duration(400)
+                entering={FadeInUp.duration(LAYOUT_DURATION)
                   .delay(variants.length * 25)
                   .easing(Easing.out(Easing.exp))}
-                exiting={FadeOut.duration(200).easing(Easing.in(Easing.quad))}
-                layout={LinearTransition.duration(400)}>
+                exiting={FadeOut.duration(EXIT_DURATION).easing(
+                  Easing.in(Easing.quad),
+                )}
+                layout={LinearTransition.duration(EXIT_DURATION)}>
                 Developer
               </Animated.Text>
             </>
@@ -135,6 +160,8 @@ const styles = StyleSheet.create({
   // drop down
   dropdownContainer: {
     alignSelf: 'flex-start',
+    width: '100%',
+    overflow: 'hidden', // 중요: 내부 콘텐츠가 컨테이너를 넘지 않도록 함
   },
   dropdownItem: {
     paddingVertical: 3,
