@@ -21,19 +21,9 @@ function InlineTextSwap(): React.ReactElement {
   ]);
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [isAnimatingOut, setIsAnimatingOut] = useState<boolean>(false);
 
   const dropDown = (): void => {
-    if (isExpanded) {
-      setIsAnimatingOut(true);
-
-      setTimeout(() => {
-        setIsExpanded(false);
-        setIsAnimatingOut(false);
-      }, EXIT_DURATION);
-    } else {
-      setIsExpanded(true);
-    }
+    setIsExpanded(prev => !prev);
   };
 
   const changeWord = (): void => {
@@ -64,7 +54,7 @@ function InlineTextSwap(): React.ReactElement {
             </TouchableOpacity>
           </View>
 
-          {!isExpanded && !isAnimatingOut && (
+          {!isExpanded && (
             <Animated.Text
               style={[styles.staticText, styles.inlineDeveloper]}
               entering={FadeInDown.duration(LAYOUT_DURATION / 2).easing(
@@ -77,7 +67,7 @@ function InlineTextSwap(): React.ReactElement {
             </Animated.Text>
           )}
 
-          {(isExpanded || isAnimatingOut) && (
+          {isExpanded && (
             <>
               <Animated.View
                 style={styles.dropdownContainer}
@@ -107,11 +97,7 @@ function InlineTextSwap(): React.ReactElement {
                         ];
                         setVariants(newVariants);
 
-                        setIsAnimatingOut(true);
-                        setTimeout(() => {
-                          setIsExpanded(false);
-                          setIsAnimatingOut(false);
-                        }, EXIT_DURATION);
+                        setIsExpanded(false);
                       }}>
                       <Text style={styles.dropdownText}>{variant}</Text>
                     </TouchableOpacity>
