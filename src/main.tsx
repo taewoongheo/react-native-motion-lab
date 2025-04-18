@@ -20,7 +20,7 @@ const listData: Array<{
   },
   {
     title: 'InlineTextSwap',
-    description: 'Swaps inline text with animation on touch or click',
+    description: 'Swaps inline text on touch',
     route: 'InlineTextSwap',
   },
 ];
