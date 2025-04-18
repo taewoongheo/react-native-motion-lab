@@ -8,7 +8,7 @@ import Animated, {
   FadeInUp,
 } from 'react-native-reanimated';
 
-const LAYOUT_DURATION = 300;
+const LAYOUT_DURATION = 250;
 const EXIT_DURATION = 1;
 
 function InlineTextSwap(): React.ReactElement {
@@ -23,7 +23,6 @@ function InlineTextSwap(): React.ReactElement {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isAnimatingOut, setIsAnimatingOut] = useState<boolean>(false);
 
-  // 드롭다운 토글 핸들러 수정
   const dropDown = (): void => {
     if (isExpanded) {
       setIsAnimatingOut(true);
@@ -51,8 +50,9 @@ function InlineTextSwap(): React.ReactElement {
         <Text style={styles.staticText}>Hi👋, I'm</Text>
 
         <View style={styles.textContainer}>
-          <TouchableOpacity onPress={dropDown} activeOpacity={0.7}>
-            <View style={styles.variantsContainer}>
+          <View style={styles.variantsContainer}>
+            <Text style={styles.emoji}>🖥️</Text>
+            <TouchableOpacity onPress={dropDown} activeOpacity={0.7}>
               <Animated.Text
                 style={styles.variantsText}
                 key={variants[0]}
@@ -61,8 +61,8 @@ function InlineTextSwap(): React.ReactElement {
                 )}>
                 {variants[0]}
               </Animated.Text>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
 
           {!isExpanded && !isAnimatingOut && (
             <Animated.Text
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     alignSelf: 'flex-start',
     width: '100%',
-    overflow: 'hidden', // 중요: 내부 콘텐츠가 컨테이너를 넘지 않도록 함
+    overflow: 'hidden',
   },
   dropdownItem: {
     paddingVertical: 3,
@@ -184,6 +184,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
     marginRight: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  emoji: {
+    fontSize: 30,
+    marginRight: 5,
   },
   variantsText: {
     fontSize: 30,
