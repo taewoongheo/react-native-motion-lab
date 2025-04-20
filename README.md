@@ -2,11 +2,9 @@
 
 This repository is a personal lab for exploring interaction and animation in React Native. It focuses on recreating real-world UI patterns and motion effects — to practice how they actually work. Through small, focused prototypes, it’s a space for technical curiosity and hands-on learning with libraries like [Reanimated](https://github.com/software-mansion/react-native-reanimated), [Gesture Handler](https://github.com/software-mansion/react-native-gesture-handler), and [Skia](https://github.com/Shopify/react-native-skia)
 
-## Get Started
+## Getting started
 
 If you haven't already set up a React Native environment, follow the [React Native Without Expo guide](https://reactnative.dev/docs/set-up-your-environment).
-
-⚠️ Make sure to select the "Without a Framework", not "Expo".
 
 You also need to set up the following libraries manually:
 
