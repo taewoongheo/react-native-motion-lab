@@ -4,7 +4,7 @@ This repository is a personal lab for exploring interaction and animation in Rea
 
 ## Getting started
 
-If you haven't already set up a React Native environment, follow the [React Native Without Expo guide](https://reactnative.dev/docs/set-up-your-environment).
+If you haven't already set up a React Native environment, follow the [set-up-your-environment](https://reactnative.dev/docs/set-up-your-environment).
 
 You also need to set up the following libraries manually:
 
