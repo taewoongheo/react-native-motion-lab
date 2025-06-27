@@ -7,6 +7,7 @@ import Animated, {
   FadeOut,
   FadeInUp,
 } from 'react-native-reanimated';
+import Layout from '../../layout';
 
 const LAYOUT_DURATION = 250;
 const EXIT_DURATION = 1;
@@ -33,7 +34,7 @@ function InlineTextSwap(): React.ReactElement {
   };
 
   return (
-    <View style={styles.mainContainer}>
+    <Layout>
       <Animated.View
         style={styles.mainAnimatedContainer}
         layout={LinearTransition.duration(LAYOUT_DURATION)}>
@@ -68,7 +69,7 @@ function InlineTextSwap(): React.ReactElement {
           )}
 
           {isExpanded && (
-            <>
+            <div>
               <Animated.View
                 style={styles.dropdownContainer}
                 entering={FadeInDown.duration(LAYOUT_DURATION).easing(
@@ -116,7 +117,7 @@ function InlineTextSwap(): React.ReactElement {
                 layout={LinearTransition.duration(EXIT_DURATION)}>
                 Developer
               </Animated.Text>
-            </>
+            </div>
           )}
         </View>
       </Animated.View>
@@ -127,7 +128,7 @@ function InlineTextSwap(): React.ReactElement {
         activeOpacity={0.7}>
         <Text style={styles.btnText}>change</Text>
       </TouchableOpacity>
-    </View>
+    </Layout>
   );
 }
 
