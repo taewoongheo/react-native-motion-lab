@@ -1,4 +1,4 @@
-package com.interactionlab
+package com.motionlab
 
 import android.app.Application
 import com.facebook.react.PackageList

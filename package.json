@@ -1,10 +1,11 @@
 {
-  "name": "interaction-lab",
+  "name": "motion-lab",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "ios:sim": "react-native run-ios --udid F4E384D4-0D71-46CA-98C6-2532CB407A61",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest"
