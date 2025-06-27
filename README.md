@@ -1,16 +1,10 @@
-# React Native Interaction Lab
+# React Native Motion Lab
 
-This repository is a personal lab for exploring interaction and animation in React Native. It focuses on recreating real-world UI patterns and motion effects — to practice how they actually work. Through small, focused prototypes, it’s a space for technical curiosity and hands-on learning with libraries like [Reanimated](https://github.com/software-mansion/react-native-reanimated), [Gesture Handler](https://github.com/software-mansion/react-native-gesture-handler), and [Skia](https://github.com/Shopify/react-native-skia)
+This repository is a personal lab for exploring motion in React Native. It focuses on recreating real-world UI patterns and motion effects — animations, interactions, transitions, gesture-driven movements, and any interface elements that move. Through small, focused prototypes, it's a space for technical curiosity and hands-on learning.
 
 ## Getting started
 
 If you haven't already set up a React Native environment, follow the [set-up-your-environment](https://reactnative.dev/docs/set-up-your-environment).
-
-You also need to set up the following libraries manually:
-
-- [Reanimated](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started)
-- [Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/installation)
-- [Skia](https://shopify.github.io/react-native-skia/docs/getting-started/installation)
 
 ### Install dependencies
 
