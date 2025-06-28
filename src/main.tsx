@@ -23,6 +23,11 @@ const listData: Array<{
     description: 'Swaps inline text on touch',
     route: 'InlineTextSwap',
   },
+  {
+    title: 'Particle Effect',
+    description: 'Particle effect triggered by background touch',
+    route: 'ParticleEffect',
+  },
 ];
 
 const ListItem = ({

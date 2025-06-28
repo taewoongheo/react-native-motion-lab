@@ -7,13 +7,15 @@ import {StatusBar, StyleSheet} from 'react-native';
 import {colors} from './src/constants/colors';
 
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import RippleEffect from './src/interactions/ripple-effect/RippleEffect';
-import InlineTextSwap from './src/interactions/inline-text-swap/InlineTextSwap';
+import RippleEffect from './src/motions/ripple-effect/RippleEffect';
+import InlineTextSwap from './src/motions/inline-text-swap/InlineTextSwap';
+import ParticleEffect from './src/motions/ParticleEffect/ParticleEffect';
 
 export type RootStackParamList = {
   Main: undefined;
   RippleEffect: undefined;
   InlineTextSwap: undefined;
+  ParticleEffect: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -46,6 +48,11 @@ function App(): React.JSX.Element {
               name="InlineTextSwap"
               component={InlineTextSwap}
               options={{title: 'Inline Text Swap'}}
+            />
+            <Stack.Screen
+              name="ParticleEffect"
+              component={ParticleEffect}
+              options={{title: 'Particle Effect'}}
             />
           </Stack.Navigator>
         </NavigationContainer>
