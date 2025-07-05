@@ -1,106 +1,178 @@
 import React from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
 import Layout from '../../layout';
-import {Canvas, Circle, vec} from '@shopify/react-native-skia';
+import {Canvas} from '@shopify/react-native-skia';
 import {
   Gesture,
   GestureDetector,
   GestureUpdateEvent,
   TapGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
-import {
-  useDerivedValue,
-  useFrameCallback,
-  useSharedValue,
-} from 'react-native-reanimated';
+import {useSharedValue} from 'react-native-reanimated';
 import {PanGestureHandlerEventPayload} from 'react-native-screens';
+import Particle from './Particle';
+import Vector from './Vector';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-const c = vec(width / 2, height / 2);
-const r = 5;
+// poisson disk sampling
+const poissonDiskSampling = () => {
+  const r = 19; // min distance between particles
+  const k = 30; // max number of attempts to find a valid sample
+  const w = r / Math.sqrt(2); // grid cell size
+  const grid = [];
+  const active = [];
 
-const INFLUENCE_DISTANCE = 100;
+  const centerVector = new Vector(width / 2, height / 2);
+  const maxThreshold = 150;
+  const minThreshold = 20;
 
-// physics constants
-const RESTORE_FORCE = 0.02; // restore force
-const FRICTION = 0.97; // friction (0.95-0.99)
-const PUSH_FORCE = 30; // push force when tapped
-const SPEED_SCALE = 0.3; // speed scale
+  // initialize grid cell
+  const colCnt = Math.floor(width / w);
+  const rowCnt = Math.floor(height / w);
+  for (let i = 0; i < colCnt * rowCnt; i++) {
+    grid[i] = undefined;
+  }
+
+  // start with random point
+  const x = width / 2 + minThreshold;
+  const y = height / 2 + minThreshold;
+  const colIdx = Math.floor(x / w);
+  const rowIdx = Math.floor(y / w);
+  const pos = new Vector(x, y);
+  grid[colIdx + rowIdx * colCnt] = pos;
+  active.push(pos);
+
+  while (active.length > 0) {
+    // select random point from active list
+    const randIdx = Math.floor(Math.random() * active.length);
+    const basePos = active[randIdx];
+    let found = false;
+
+    // attempt n times to find a valid sample
+    for (let n = 0; n < k; n++) {
+      // generate random vector
+      const sample = Vector.random2D();
+      const randMagnitude = r + Math.random() * r; // r~2r range
+      sample.setMagnitude(randMagnitude);
+      sample.addVector(basePos);
+
+      const col = Math.floor(sample.x / w);
+      const row = Math.floor(sample.y / w);
+
+      const distFromCenter = Vector.dist(sample, centerVector);
+
+      if (
+        col < 0 ||
+        col >= colCnt ||
+        row < 0 ||
+        row >= rowCnt ||
+        grid[col + row * colCnt] ||
+        distFromCenter > maxThreshold ||
+        distFromCenter < minThreshold
+      ) {
+        continue;
+      }
+
+      const remainDistance = maxThreshold - distFromCenter;
+      let currentR = Math.max(1, remainDistance * 0.2);
+
+      let neighborDistOk = true;
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          const neighborColIdx = col + i;
+          const neighborRowIdx = row + j;
+
+          if (
+            neighborColIdx < 0 ||
+            neighborColIdx >= colCnt ||
+            neighborRowIdx < 0 ||
+            neighborRowIdx >= rowCnt
+          ) {
+            continue;
+          }
+
+          const neighborGridIdx = neighborColIdx + neighborRowIdx * colCnt;
+          const neighborPos = grid[neighborGridIdx];
+          if (neighborPos === undefined) {
+            continue;
+          }
+
+          const distFromNeighbor = Vector.dist(sample, neighborPos);
+          if (distFromNeighbor < currentR) {
+            neighborDistOk = false;
+            break;
+          }
+        }
+        if (!neighborDistOk) {
+          break;
+        }
+      }
+      if (neighborDistOk) {
+        found = true;
+        grid[col + row * colCnt] = sample;
+        active.push(sample);
+        break;
+      }
+    }
+    // tried n times, but failed to find a valid sample
+    if (!found) {
+      active.splice(randIdx, 1);
+    }
+  }
+
+  // add edge particles
+  for (let i = 0; i < 360; i += 3) {
+    const vector = new Vector(Math.cos(i), Math.sin(i));
+    vector.setMagnitude(maxThreshold);
+    vector.addVector(centerVector);
+
+    const randomOffsetX = Math.random() * 6;
+    const randomOffsetY = Math.random() * 6;
+    vector.x += randomOffsetX;
+    vector.y += randomOffsetY;
+
+    grid.push(vector);
+  }
+
+  return grid;
+};
 
 function ParticleEffect(): React.JSX.Element {
-  // actual physics position and velocity
-  const px = useSharedValue(c.x);
-  const py = useSharedValue(c.y);
-  const vx = useSharedValue(0); // x-axis velocity
-  const vy = useSharedValue(0); // y-axis velocity
+  const particles = poissonDiskSampling();
+  const touchX = useSharedValue(0);
+  const touchY = useSharedValue(0);
+  const isTouching = useSharedValue(false);
 
-  // physics simulation loop - useFrameCallback
-  useFrameCallback(() => {
-    // calculate restore force to return to origin
-    const restoreX = (c.x - px.value) * RESTORE_FORCE;
-    const restoreY = (c.y - py.value) * RESTORE_FORCE;
-
-    // apply force to velocity (acceleration)
-    vx.value += restoreX;
-    vy.value += restoreY;
-
-    // apply friction (velocity decrease)
-    vx.value *= FRICTION;
-    vy.value *= FRICTION;
-
-    // update position (apply velocity)
-    px.value += vx.value * SPEED_SCALE;
-    py.value += vy.value * SPEED_SCALE;
-  });
-
-  // rendering position
-  const position = useDerivedValue(() => {
-    return vec(px.value, py.value);
-  });
-
-  const particleMove = (
+  const handleTouch = (
     e:
       | GestureUpdateEvent<PanGestureHandlerEventPayload>
       | GestureUpdateEvent<TapGestureHandlerEventPayload>,
   ) => {
     'worklet';
-
-    const tx = e.x;
-    const ty = e.y;
-
-    // calculate distance from current position to touch position
-    const dx = tx - px.value;
-    const dy = ty - py.value;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (distance < INFLUENCE_DISTANCE) {
-      const minDistance = 10;
-      const safeDistance = Math.max(distance, minDistance);
-
-      // normalized direction vector
-      const normalizedDx = dx / safeDistance;
-      const normalizedDy = dy / safeDistance;
-
-      // calculate force
-      const forceMultiplier = INFLUENCE_DISTANCE / safeDistance;
-      const pushForce = PUSH_FORCE * forceMultiplier;
-
-      // apply force in opposite direction of touch (immediately to velocity)
-      vx.value -= normalizedDx * pushForce;
-      vy.value -= normalizedDy * pushForce;
-    }
+    touchX.value = e.x;
+    touchY.value = e.y;
+    isTouching.value = true;
   };
 
-  const tap = Gesture.Tap().onStart(e => particleMove(e));
+  const tap = Gesture.Tap()
+    .onStart(e => handleTouch(e))
+    .onEnd(() => {
+      'worklet';
+      isTouching.value = false;
+    });
 
   const pan = Gesture.Pan()
     .onBegin(e => {
-      particleMove(e);
+      handleTouch(e);
     })
     .onUpdate(e => {
-      particleMove(e);
+      handleTouch(e);
+    })
+    .onEnd(() => {
+      'worklet';
+      isTouching.value = false;
     });
 
   const combinedGesture = Gesture.Race(tap, pan);
@@ -109,7 +181,24 @@ function ParticleEffect(): React.JSX.Element {
     <Layout>
       <GestureDetector gesture={combinedGesture}>
         <Canvas style={styles.container}>
-          <Circle c={position} r={r} color="red" />
+          {particles.map(particle => {
+            if (!particle) {
+              return null;
+            }
+            const particleColor = Math.random() * 170;
+            return (
+              <Particle
+                key={`${particle.x}-${particle.y}`}
+                centerX={particle.x}
+                centerY={particle.y}
+                radius={Math.random() * 0.5 + 0.8}
+                color={`rgb(${particleColor}, ${particleColor}, ${particleColor})`}
+                touchX={touchX}
+                touchY={touchY}
+                isTouching={isTouching}
+              />
+            );
+          })}
         </Canvas>
       </GestureDetector>
     </Layout>
@@ -121,7 +210,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: width,
     height: height,
-    backgroundColor: 'rgb(208, 235, 237)',
   },
 });
 
