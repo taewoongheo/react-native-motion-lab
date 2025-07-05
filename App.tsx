@@ -7,8 +7,8 @@ import {StatusBar, StyleSheet} from 'react-native';
 import {colors} from './src/constants/colors';
 
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import RippleEffect from './src/motions/ripple-effect/RippleEffect';
-import InlineTextSwap from './src/motions/inline-text-swap/InlineTextSwap';
+import RippleEffect from './src/motions/RippleEffect/RippleEffect';
+import InlineTextSwap from './src/motions/InlineTextSwap/InlineTextSwap';
 import ParticleEffect from './src/motions/ParticleEffect/ParticleEffect';
 
 export type RootStackParamList = {
