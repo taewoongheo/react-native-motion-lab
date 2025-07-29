@@ -28,6 +28,11 @@ const listData: Array<{
     description: 'Particle effect triggered by background touch',
     route: 'ParticleEffect',
   },
+  {
+    title: 'TunerSlider',
+    description: 'Scrollable slider mimicking radio tuner',
+    route: 'TunerSlider',
+  },
 ];
 
 const ListItem = ({

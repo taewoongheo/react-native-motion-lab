@@ -10,12 +10,14 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import RippleEffect from './src/motions/RippleEffect/RippleEffect';
 import InlineTextSwap from './src/motions/InlineTextSwap/InlineTextSwap';
 import ParticleEffect from './src/motions/ParticleEffect/ParticleEffect';
+import TunerSlider from './src/motions/TunerSlider/TunerSlider';
 
 export type RootStackParamList = {
   Main: undefined;
   RippleEffect: undefined;
   InlineTextSwap: undefined;
   ParticleEffect: undefined;
+  TunerSlider: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -53,6 +55,11 @@ function App(): React.JSX.Element {
               name="ParticleEffect"
               component={ParticleEffect}
               options={{title: 'Particle Effect'}}
+            />
+            <Stack.Screen
+              name="TunerSlider"
+              component={TunerSlider}
+              options={{title: 'Tuner Slider'}}
             />
           </Stack.Navigator>
         </NavigationContainer>
