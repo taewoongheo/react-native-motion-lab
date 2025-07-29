@@ -42,6 +42,14 @@ Particle system with touch and drag. Particles are distributed using Poisson dis
 <video src="https://github-production-user-asset-6210df.s3.amazonaws.com/127009780/462796864-2be99a5e-e5ce-400d-abd5-2a71ea9f78f8.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA/20250705/us-east-1/s3/aws4_request&X-Amz-Date=20250705T155639Z&X-Amz-Expires=300&X-Amz-Signature=e014364503cf3f804c2e3ea173b990f9e560257b7042a67f828fa098051bda8b&X-Amz-SignedHeaders=host" controls muted playsinline width="300" />
 </p>
 
+### [Tunder Slider](https://github.com/taewoongheo/react-native-motion-lab/blob/main/src/motions/TunerSlider/TunerSlider.tsx)
+
+A tuner-style slider with snap-to-value functionality. Snaps to discrete values (0-100 in steps of 5) with smooth scrolling and momentum-based selection.
+
+<p> 
+<video src="https://github.com/user-attachments/assets/473bdee5-bdc4-4b9a-8488-7700fe218a7c" controls muted playsinline width="300" />
+</p>
+
 ### [Inline Text Swap](https://github.com/taewoongheo/react-native-interaction-lab/blob/main/src/interactions/inline-text-swap/InlineTextSwap.tsx)
 
 Swaps inline text on touch
